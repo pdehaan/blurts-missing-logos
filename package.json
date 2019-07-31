@@ -1,0 +1,16 @@
+{
+  "name": "blurts-missing-logos",
+  "version": "1.0.0",
+  "author": "Peter deHaan <peter@deseloper.com> (https://about.me/peterdehaan)",
+  "keywords": [],
+  "license": "MPL-2.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "node cli.js",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "check-broken-links": "^2.0.4"
+  }
+}
