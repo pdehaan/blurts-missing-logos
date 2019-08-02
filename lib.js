@@ -1,35 +1,46 @@
 const axios = require("axios");
 const check = require("check-broken-links");
 
-const SERVER = process.env.SERVER || "https://fx-breach-alerts.herokuapp.com";
-const LOGO_BASE_URL = new URL("/img/logos", SERVER).href;
+const SERVERS = {
+  "dev": "https://fx-breach-alerts.herokuapp.com",
+  "prod": "https://monitor.firefox.com"
+};
+
+const argv = process.argv.slice(2);
+const serverUrl = process.env.SERVER || argv.includes("-p") ? SERVERS.prod : SERVERS.dev;
+
+const LOGO_PATH = "/img/logos/";
+const LOGO_BASE_URL = new URL(LOGO_PATH, serverUrl).href;
 
 module.exports = {
   LOGO_BASE_URL,
   checkMissingLogos
 };
 
-async function checkMissingLogos(baseUrl = LOGO_BASE_URL) {
-  const breaches = await getBreaches(50);
-  const logos = breaches.map(breach => `${baseUrl}/${breach.LogoPath}`);
+async function checkMissingLogos(baseUrl = serverUrl, limit = process.env.LIMIT) {
+  const breaches = await getBreaches(limit);
+  const logos = breaches.map(breach => new URL(`${LOGO_PATH}${breach.LogoPath}`, serverUrl).href);
   const broken = await check(baseUrl, logos);
   const res = broken.top.map(link => {
-    link.details = link.url.replace("/img/logos/", "/breach-details/").replace(/\.png$/, "");
-    return link;
+    return {
+      logo: link.url,
+      details: link.url.replace(LOGO_PATH, "/breach-details/").replace(/\.png$/, ""),
+      status: link.err
+    };
   });
 
-  return sortByString(res, "url");
+  return sortByString(res, "logo");
 }
 
 async function getBreaches(limit = 50) {
-  const breachesUrl = new URL("/hibp/breaches", SERVER).href;
+  const breachesUrl = new URL("/hibp/breaches", serverUrl).href;
   const res = await axios.get(breachesUrl);
   const sortedBreaches = sortByDate(res.data, "AddedDate");
 
   return sortedBreaches.slice(0, limit);
 }
 
-function sortByString(arr, key = "url") {
+function sortByString(arr, key) {
   return arr.sort((resultA, resultB) => {
     const valueA = resultA[key].toLowerCase();
     const valueB = resultB[key].toLowerCase();
