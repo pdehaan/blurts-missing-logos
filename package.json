@@ -1,6 +1,6 @@
 {
   "name": "blurts-missing-logos",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Peter deHaan <peter@deseloper.com> (https://about.me/peterdehaan)",
   "bin": {
     "blurts-missing-logos": "cli.js"
@@ -14,9 +14,9 @@
   },
   "devDependencies": {},
   "homepage": "https://github.com/pdehaan/blurts-missing-logos#readme",
-  "keywords": [],
+  "keywords": ["hibp", "firefox monitor"],
   "license": "MPL-2.0",
-  "main": "index.js",
+  "main": "lib.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pdehaan/blurts-missing-logos.git"
