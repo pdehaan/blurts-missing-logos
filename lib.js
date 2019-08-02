@@ -1,7 +1,9 @@
 const axios = require("axios");
 const check = require("check-broken-links");
 
-const LOGO_BASE_URL = "https://monitor.firefox.com/img/logos";
+const SERVER = process.env.SERVER || "https://fx-breach-alerts.herokuapp.com"
+//const LOGO_BASE_URL = `${SERVER}/img/logos`;
+const LOGO_BASE_URL = new URL("/img/logos", SERVER).href;
 
 module.exports = {
   LOGO_BASE_URL,
