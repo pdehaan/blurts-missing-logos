@@ -26,6 +26,7 @@ If missing breach logos are found, an array of objects (with `logo`, `details`, 
 By default, the development server, https://fx-breach-alerts.herokuapp.com, is checked (in case breach logos have already been added but not yet deployed to production):
 
 If you want to check against a different environment, you can pass a `SERVER` environment variable to the script. Or if you want to check production, you can simply pass the `-p` flag.
+If you want to check the production site, but using the CDN served images, you can pass the `-c` flag.
 
 The following two commands are the same:
 

@@ -2,15 +2,26 @@ const axios = require("axios");
 const check = require("check-broken-links");
 
 const SERVERS = {
+  "cdn": "https://monitor.cdn.mozilla.net",
   "dev": "https://fx-breach-alerts.herokuapp.com",
   "prod": "https://monitor.firefox.com"
 };
 
 const argv = process.argv.slice(2);
-const serverUrl = process.env.SERVER || argv.includes("-p") ? SERVERS.prod : SERVERS.dev;
+const hasArg = arg => argv.includes(arg);
+let serverUrl = process.env.SERVER || SERVERS.dev;
+let logoUrl = serverUrl;
+if (hasArg("-p")) {
+  serverUrl = SERVERS.prod;
+  logoUrl = serverUrl;
+}
+if (hasArg("-c") || hasArg("-cdn")) {
+  serverUrl = SERVERS.prod;
+  logoUrl = SERVERS.cdn;
+}
 
 const LOGO_PATH = "/img/logos/";
-const LOGO_BASE_URL = new URL(LOGO_PATH, serverUrl).href;
+const LOGO_BASE_URL = new URL(LOGO_PATH, logoUrl).href;
 
 module.exports = {
   LOGO_BASE_URL,
@@ -19,7 +30,8 @@ module.exports = {
 
 async function checkMissingLogos(baseUrl = serverUrl, limit = process.env.LIMIT) {
   const breaches = await getBreaches(limit);
-  const logos = breaches.map(breach => new URL(`${LOGO_PATH}${breach.LogoPath}`, serverUrl).href);
+  const logos = breaches.map(breach => new URL(`${LOGO_PATH}${breach.LogoPath}`, logoUrl).href);
+
   const broken = await check(baseUrl, logos);
   const res = broken.top.map(link => {
     return {
@@ -34,6 +46,8 @@ async function checkMissingLogos(baseUrl = serverUrl, limit = process.env.LIMIT)
 
 async function getBreaches(limit = 50) {
   const breachesUrl = new URL("/hibp/breaches", serverUrl).href;
+  console.log("API:", breachesUrl);
+  console.log("CDN:", logoUrl);
   const res = await axios.get(breachesUrl);
   const sortedBreaches = sortByDate(res.data, "AddedDate");
 

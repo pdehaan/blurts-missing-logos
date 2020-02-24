@@ -14,7 +14,10 @@
   },
   "devDependencies": {},
   "homepage": "https://github.com/pdehaan/blurts-missing-logos#readme",
-  "keywords": ["hibp", "firefox monitor"],
+  "keywords": [
+    "hibp",
+    "firefox monitor"
+  ],
   "license": "MPL-2.0",
   "main": "lib.js",
   "repository": {
