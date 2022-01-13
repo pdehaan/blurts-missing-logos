@@ -9,7 +9,7 @@
     "url": "https://github.com/pdehaan/blurts-missing-logos/issues"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "check-broken-links": "^2.0.4"
   },
   "devDependencies": {},
